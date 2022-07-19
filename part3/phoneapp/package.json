@@ -1,5 +1,5 @@
 {
-  "name": "part3",
+  "name": "phoneapp",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -38,7 +38,6 @@
     ]
   },
   "devDependencies": {
-    "install": "^0.13.0",
     "json-server": "^0.17.0"
   }
 }
