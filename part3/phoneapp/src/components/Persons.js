@@ -5,7 +5,10 @@ const Persons = ({ persons, setPersons, keyword }) => {
 
   const filterBySearch = () => {
     return persons.filter(nameObj =>
-      nameObj.name.toLowerCase().includes(keyword.toLowerCase())
+      {
+        return nameObj.name.toLowerCase().includes(keyword.toLowerCase())
+      }
+      
     )
   }
 

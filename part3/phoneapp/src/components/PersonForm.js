@@ -2,7 +2,7 @@ import { useState } from 'react'
 import personService from '../services/Persons'
 import DeleteButton from './Delete'
 
-const PersonForm = ({ persons, setPersons, id }) => {
+const PersonForm = ({ persons, setPersons, id, setOperation, Operations, setMessage}) => {
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
 
@@ -41,20 +41,34 @@ const PersonForm = ({ persons, setPersons, id }) => {
       alert(newName + " is already added to phonebook")
     } else if (nameExist(nameObj) && window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
       personService.update(persons.find(person => person.name === newName).id, nameObj)
-      persons.find(person => person.name === newName)
-      const updatedPersons = {...persons}
-      let updateIndex = updatedPersons.findIndex(person => person.name === newName)
-      updatedPersons[updateIndex] = newPhone
-      setPersons(updatedPersons)
+        .then(response => {
+          setPersons(persons =>
+            persons.map(person => {
+              if (person.name === newName) {
+                return { ...person, number: newPhone }
+              }
+              return person
+            })
+          )
+    
+        setOperation(Operations.Update)
+        setMessage("Updated " + newName)
+        })
+        .catch((error) => {
+          setOperation(Operations.Error)
+          setMessage(`Information of ${newName} has already been removed from server` )
+          console.log(error)
+        }
+      )
     } else {
       setPersons(persons.concat(nameObj))
       personService.create(nameObj).then(
         returnedPerson => setPersons(persons.concat(returnedPerson))
       )
       id += 1
+      setOperation(Operations.Create)
+      setMessage("Created " + newName)
     }
-
-
     setNewName('')
     setNewPhone('')
   }
